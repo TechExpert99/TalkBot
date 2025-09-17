@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TalkBot — Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="logo">TB</div>
+      <div>
+        <div class="brand-title">TalkBot</div>
+        <div class="brand-sub">AI-powered assistant</div>
+      </div>
+    </div>
+    <nav>
+  <a href="{{ url_for('home') }}">Home</a>
+  <a href="{{ url_for('about') }}">About</a>
+  <a href="{{ url_for('future') }}">Future</a>
+  <a href="{{ url_for('contact') }}">Contact</a>
+</nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero">
+    <h1>Start with <span class="accent">TalkBot</span></h1>
+    <p>Choose how you want to interact with TalkBot:</p>
+    <div class="hero-actions">
+  <a href="{{ url_for('chat_page') }}" class="btn">💬 Chat with TalkBot</a>
+  <a href="{{ url_for('camera_page') }}" class="btn ghost">📷 CameraBot</a>
+</div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p class="disclaimer">Disclaimer: TalkBot can make mistakes. Verify important info before acting.</p>
+    <p>© TalkBot • 2025</p>
+  </footer>
+</body>
+</html>

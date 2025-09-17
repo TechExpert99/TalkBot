@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TalkBot — Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TB</div>
+      <div><div class="brand-title">TalkBot</div></div>
+    </div>
+   
+  </header>
+
+  <main class="chat-container">
+  <div id="chat-box" class="chat-box"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-message" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="startListening()">🎤</button>
+    <button onclick="speakLastReply()">🔊</button>
+  </div>
+</main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

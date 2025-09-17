@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TalkBot — CameraBot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TB</div>
+      <div><div class="brand-title">TalkBot</div></div>
+    </div>
+   
+  </header>
+
+  <main class="camera-container">
+    <h2>CameraBot Interface</h2>
+    <video id="camera" autoplay></video>
+    <button onclick="startCamera()">Start Camera</button>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
