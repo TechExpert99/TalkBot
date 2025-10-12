@@ -4,10 +4,540 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TalkBot — Home</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-card: #2d2d2d;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --accent-primary: #667eea;
+      --accent-secondary: #764ba2;
+      --accent-glow: rgba(102, 126, 234, 0.3);
+      --border-color: #404040;
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-hero: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+      animation: rotate 30s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 100;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      transition: all 0.3s;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 4px 16px var(--accent-glow);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 4px 24px rgba(102, 126, 234, 0.5);
+        transform: scale(1.05);
+      }
+    }
+
+    .logo:hover {
+      transform: rotate(10deg) scale(1.1);
+      box-shadow: 0 6px 24px rgba(102, 126, 234, 0.6);
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transition: all 0.3s;
+      transform: translateX(-50%);
+    }
+
+    nav a:hover {
+      color: var(--text-primary);
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    nav a:hover::after {
+      width: 80%;
+    }
+
+    /* Hero Section */
+    main.hero {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 5%;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    main.hero h1 {
+      font-size: clamp(40px, 8vw, 72px);
+      font-weight: 800;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+    .accent {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+    }
+
+    .accent::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+      opacity: 0.5;
+    }
+
+    main.hero > p {
+      font-size: 20px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      max-width: 600px;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease-out 0.3s backwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    }
+
+    .btn {
+      padding: 16px 36px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.5s;
+      transform: translate(-50%, -50%);
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:not(.ghost) {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn:not(.ghost):hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--accent-primary);
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Floating Cards Background */
+    .floating-cards {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-card {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: var(--gradient-hero);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      animation: float 20s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    .floating-card:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-card:nth-child(2) {
+      top: 60%;
+      right: 15%;
+      animation-delay: 3s;
+    }
+
+    .floating-card:nth-child(3) {
+      bottom: 15%;
+      left: 20%;
+      animation-delay: 6s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      25% {
+        transform: translateY(-30px) rotate(5deg);
+      }
+      50% {
+        transform: translateY(0) rotate(0deg);
+      }
+      75% {
+        transform: translateY(30px) rotate(-5deg);
+      }
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      padding: 32px 5%;
+      text-align: center;
+    }
+
+    .disclaimer {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      padding: 12px 24px;
+      background: rgba(255, 193, 7, 0.1);
+      border-left: 3px solid #ffc107;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    footer p:last-child {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 16px;
+    }
+
+    /* Features Grid */
+    .features {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+      padding: 0 5%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-hero);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent-primary);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      nav {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      nav a {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
+
+      main.hero h1 {
+        font-size: 36px;
+      }
+
+      main.hero > p {
+        font-size: 16px;
+        margin-bottom: 32px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+        padding: 0 20px;
+      }
+
+      .floating-card {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand {
+        gap: 12px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .brand-title {
+        font-size: 20px;
+      }
+
+      .brand-sub {
+        font-size: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Floating Background Cards -->
+  <div class="floating-cards">
+    <div class="floating-card"></div>
+    <div class="floating-card"></div>
+    <div class="floating-card"></div>
+  </div>
+
   <!-- Header -->
   <header>
     <div class="brand">
@@ -18,28 +548,48 @@
       </div>
     </div>
     <nav>
-  <a href="{{ url_for('home') }}">Home</a>
-  <a href="{{ url_for('about') }}">About</a>
-  <a href="{{ url_for('future') }}">Future</a>
-  <a href="{{ url_for('contact') }}">Contact</a>
-</nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/future">Future</a>
+      <a href="/contact">Contact</a>
+     
+    </nav>
   </header>
 
   <!-- Hero Section -->
   <main class="hero">
     <h1>Start with <span class="accent">TalkBot</span></h1>
-    <p>Choose how you want to interact with TalkBot:</p>
+    <p>Choose how you want to interact with TalkBot - your intelligent AI assistant ready to help you anytime, anywhere.</p>
     <div class="hero-actions">
-  <a href="{{ url_for('chat_page') }}" class="btn">💬 Chat with TalkBot</a>
-  <a href="{{ url_for('camera_page') }}" class="btn ghost">📷 CameraBot</a>
-</div>
+      <a href="/chat" class="btn">💬 Chat with TalkBot</a>
+      <a href="/camera" class="btn ghost">📷 CameraBot</a>
+    </div>
 
+    <!-- Features Section -->
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Fast & Reliable</h3>
+        <p>Get instant responses powered by advanced AI technology</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your conversations are protected with industry-standard encryption</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card">
+        <div class="feature-icon">💡</div>
+        <h3>Smart Insights</h3>
+        <p>Receive intelligent suggestions and comprehensive answers</p>
+      </div>
+    </div>
   </main>
 
   <!-- Footer -->
   <footer>
-    <p class="disclaimer">Disclaimer: TalkBot can make mistakes. Verify important info before acting.</p>
-    <p>© TalkBot • 2025</p>
+    <p class="disclaimer">⚠️ Disclaimer: TalkBot can make mistakes. Verify important info before acting.</p>
+    <p>© TalkBot • 2025 • Made with ❤️</p>
   </footer>
 </body>
 </html>
