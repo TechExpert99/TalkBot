@@ -1,4 +1,4 @@
-# 🤖 TalkBot - AI Vision Chat Assistant
+# 🤖 TalkBot - AI Vision Voice And Video Assistant
 
 A cutting-edge AI-powered chat assistant with real-time camera vision, emotion detection, and interactive avatar responses powered by Google Gemini 2.0.
 
@@ -9,7 +9,7 @@ A cutting-edge AI-powered chat assistant with real-time camera vision, emotion d
 
 ## ✨ Features
 
-### 💬 Smart ChatBot
+### 💬 VoiceBot
 - Conversational AI powered by Google Gemini 2.0 Flash
 - Context-aware responses with session management
 - Voice input (Speech-to-Text)
@@ -17,7 +17,7 @@ A cutting-edge AI-powered chat assistant with real-time camera vision, emotion d
 - Beautiful modern UI with code highlighting
 - Real-time message streaming
 
-### 📷 CameraBot (YouTube Live Style)
+### 📷 VideoBot (YouTube Live Style)
 - **Real-time video streaming** with camera input
 - **AI-powered emotion detection** (7+ emotions)
 - **Interactive avatar** with lip-sync animation
