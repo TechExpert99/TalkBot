@@ -106,7 +106,7 @@ talkbot/
 ├── templates/
 │   ├── index.html         # Home page
 │   ├── chat.html          # Chat interface
-│   ├── camera.html        # Camera interface (YouTube style)
+│   ├── camera.html        # Camera interface 
 │   ├── about.html         # About page
 │   ├── future.html        # Roadmap page
 │   └── contact.html       # Contact page
@@ -269,53 +269,5 @@ Contributions are welcome! Please:
 
 ---
 
-**Made with ❤️ by TalkBot Team** • **Powered by Gemini AI** • **© 2025**
-```
+**Made with Team Tech99** • **Powered by Gemini AI** • **© 2025**
 
-## 📄 .gitignore
-```
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-ENV/
-*.egg-info/
-dist/
-build/
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Uploads
-uploads/*
-!uploads/.gitkeep
-
-# Logs
-*.log
-logs/
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Misc
-*.bak
-*.tmp
