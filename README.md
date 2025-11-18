@@ -17,7 +17,7 @@ A cutting-edge AI-powered chat assistant with real-time camera vision, emotion d
 - Beautiful modern UI with code highlighting
 - Real-time message streaming
 
-### 📷 VideoBot (YouTube Live Style)
+### 📷 VideoBot 
 - **Real-time video streaming** with camera input
 - **AI-powered emotion detection** (7+ emotions)
 - **Interactive avatar** with lip-sync animation
