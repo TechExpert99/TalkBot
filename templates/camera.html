@@ -3,75 +3,1532 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TalkBot — CameraBot</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>TalkBot — CameraBot Pro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0e27;
+      --bg-secondary: #151932;
+      --bg-tertiary: #1a1f3a;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --border-color: #2d3548;
+      --accent-primary: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.5);
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated Mesh Gradient Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.10) 0%, transparent 50%);
+      animation: meshMove 25s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes meshMove {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(5%, -5%) rotate(3deg); }
+      66% { transform: translate(-3%, 3%) rotate(-3deg); }
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(99, 102, 241, 0.4);
+      border-radius: 50%;
+      animation: float 15s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: rgba(21, 25, 50, 0.95);
+      backdrop-filter: blur(30px) saturate(180%);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      animation: iconGlow 3s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes iconGlow {
+      0%, 100% { box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+      50% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.7), 0 0 40px rgba(102, 126, 234, 0.3); }
+    }
+
+    .brand-icon::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      opacity: 0.3;
+      filter: blur(12px);
+      z-index: -1;
+    }
+
+    .brand-text {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #8b5cf6, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--error);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--error);
+      border-radius: 50%;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .icon-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-primary), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .icon-btn:hover::before {
+      opacity: 1;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--accent-glow);
+      border-color: var(--accent-primary);
+    }
+
+    /* Main Layout */
+    .main-container {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 380px;
+      bottom: 90px;
+      z-index: 1;
+    }
+
+    /* Center Stage - Main Output */
+    .stage-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: linear-gradient(145deg, #0d1117 0%, #1a1f3a 100%);
+      overflow: hidden;
+    }
+
+    /* Holographic AI Avatar with Effects */
+    #avatarCanvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 40px rgba(99, 102, 241, 0.3));
+    }
+
+    .stage-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Scanline Effect */
+    .stage-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(99, 102, 241, 0.03) 0px,
+        transparent 2px,
+        transparent 4px,
+        rgba(99, 102, 241, 0.03) 6px
+      );
+      animation: scanlines 8s linear infinite;
+    }
+
+    @keyframes scanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(20px); }
+    }
+
+    /* Vignette Effect */
+    .stage-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, transparent 50%, rgba(10, 14, 39, 0.8) 100%);
+    }
+
+    /* Status Indicators */
+    .status-bar {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 10;
+    }
+
+    .status-card {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      animation: slideInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .status-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Emotion Detection Badge */
+    .emotion-badge {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border: 2px solid var(--accent-primary);
+      border-radius: 20px;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.6);
+      animation: emotionPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes emotionPulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(99, 102, 241, 0.6); }
+      50% { box-shadow: 0 8px 40px rgba(99, 102, 241, 0.8), 0 0 60px rgba(99, 102, 241, 0.4); }
+    }
+
+    .emotion-emoji {
+      font-size: 32px;
+      animation: emojiFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes emojiFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-5px) scale(1.1); }
+    }
+
+    .emotion-text {
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* PiP Camera - Enhanced */
+    .pip-camera {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+      width: 360px;
+      height: 203px;
+      background: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        0 0 0 3px rgba(99, 102, 241, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      cursor: move;
+      z-index: 50;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: pipEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes pipEntrance {
+      from { opacity: 0; transform: scale(0.8) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .pip-camera:hover {
+      box-shadow: 
+        0 24px 70px rgba(99, 102, 241, 0.4),
+        0 0 0 3px var(--accent-primary),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+
+    .pip-camera.dragging {
+      cursor: grabbing;
+      box-shadow: 
+        0 30px 90px rgba(99, 102, 241, 0.6),
+        0 0 0 4px var(--accent-primary),
+        0 0 60px rgba(99, 102, 241, 0.5);
+    }
+
+    .pip-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .pip-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pip-recording {
+      width: 8px;
+      height: 8px;
+      background: var(--error);
+      border-radius: 50%;
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+
+    .pip-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pip-btn {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .pip-btn:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      transform: scale(1.1);
+    }
+
+    #userVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .resize-handle {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-primary), transparent);
+      border-radius: 20px 0 20px 0;
+      cursor: nwse-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .resize-handle:hover {
+      opacity: 1;
+    }
+
+    /* Chat Sidebar - Premium */
+    .chat-sidebar {
+      position: fixed;
+      top: 70px;
+      right: 0;
+      width: 380px;
+      bottom: 90px;
+      background: rgba(21, 25, 50, 0.95);
+      backdrop-filter: blur(30px) saturate(180%);
+      border-left: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.4);
+      z-index: 90;
+    }
+
+    .chat-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-count {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 8px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chat-history::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-history::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-history::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.3);
+      border-radius: 3px;
+    }
+
+    .chat-history::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-primary);
+    }
+
+    .chat-message {
+      padding: 14px 18px;
+      border-radius: 16px;
+      animation: messageSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 85%;
+      word-wrap: break-word;
+      position: relative;
+    }
+
+    @keyframes messageSlide {
+      from { opacity: 0; transform: translateY(15px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .chat-message.user {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin-left: auto;
+      color: white;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-message.user::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .chat-message.bot {
+      background: rgba(30, 35, 56, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      margin-right: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .chat-message strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+
+    .chat-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .chat-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Chat Input - Premium */
+    .chat-input-area {
+      padding: 20px 24px;
+      border-top: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(10, 14, 39, 0.6);
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      gap: 10px;
+      background: rgba(30, 35, 56, 0.8);
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      border-radius: 16px;
+      padding: 10px;
+      transition: all 0.3s;
+    }
+
+    .chat-input-wrapper:focus-within {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+      background: rgba(30, 35, 56, 1);
+    }
+
+    #messageInput {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      resize: none;
+      max-height: 100px;
+    }
+
+    #messageInput::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .send-btn {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
+      border: none;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .send-btn:hover:not(:disabled) {
+      transform: scale(1.1) rotate(-10deg);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Bottom Control Bar - Pro Style */
+    .control-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 380px;
+      height: 90px;
+      background: rgba(21, 25, 50, 0.98);
+      backdrop-filter: blur(30px) saturate(180%);
+      border-top: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 40px;
+      z-index: 100;
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .control-btn {
+      width: 64px;
+      height: 64px;
+      background: rgba(30, 35, 56, 0.6);
+      border: 2px solid rgba(99, 102, 241, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 28px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .control-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .control-btn:hover::before {
+      opacity: 1;
+    }
+
+    .control-btn:hover:not(:disabled) {
+      border-color: var(--accent-primary);
+      transform: translateY(-6px) scale(1.05);
+      box-shadow: 0 12px 32px var(--accent-glow);
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    .control-btn:active:not(:disabled) {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .control-btn.active {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
+      border-color: transparent;
+      box-shadow: 0 8px 32px var(--accent-glow);
+      animation: controlActive 2s ease-in-out infinite;
+    }
+
+    @keyframes controlActive {
+      0%, 100% { box-shadow: 0 8px 32px var(--accent-glow); }
+      50% { box-shadow: 0 8px 40px var(--accent-glow), 0 0 60px rgba(99, 102, 241, 0.4); }
+    }
+
+    .control-btn.camera-on {
+      background: linear-gradient(135deg, var(--success), #059669);
+      border-color: transparent;
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.5);
+    }
+
+    .control-label {
+      position: absolute;
+      bottom: -32px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Status Toast */
+    .status-toast {
+      position: fixed;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(20px);
+      z-index: 200;
+      animation: toastSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes toastSlide {
+      from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .status-toast.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-toast.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .status-toast.info {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container {
+        right: 0;
+      }
+
+      .chat-sidebar {
+        transform: translateX(100%);
+        transition: transform 0.3s;
+      }
+
+      .chat-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .control-bar {
+        right: 0;
+      }
+
+      .pip-camera {
+        width: 180px;
+        height: 101px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Header -->
   <header>
     <div class="brand">
-      <div class="logo">TB</div>
-      <div><div class="brand-title">TalkBot</div></div>
+      <div class="brand-icon">📷</div>
+      <div class="brand-text">CameraBot Pro</div>
+    </div>
+    
+    <div class="header-actions">
+      <a href="/" class="icon-btn" title="Home">🏠</a>
+      <a href="/chat" class="icon-btn" title="Chat">💬</a>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
     </div>
   </header>
 
-  <main class="camera-container">
-    <h2>CameraBot Interface</h2>
-    <!-- Video element to show live webcam -->
-    <video id="cameraFeed" autoplay width="400" height="300"></video>
+  <!-- Main Container -->
+  <div class="main-container">
+    <div class="stage-container">
+      <!-- AI Avatar Canvas -->
+      <canvas id="avatarCanvas"></canvas>
+      
+      <!-- Stage Overlay Effects -->
+      <div class="stage-overlay"></div>
 
-    <!-- Hidden canvas to capture frames for sending to backend -->
-    <canvas id="snapshot" width="400" height="300" style="display:none;"></canvas>
+      <div class="status-bar">
+        <div class="emotion-badge" id="emotionBadge" style="display: none;">
+          <div class="emotion-emoji" id="emotionEmoji">😊</div>
+          <div class="emotion-text" id="emotionText">Happy</div>
+        </div>
+      </div>
 
-    <!-- Display AI/CameraBot replies -->
-    <div id="botReply"></div>
+      <!-- PiP User Camera -->
+      <div class="pip-camera" id="pipCamera">
+        <div class="pip-header">
+          <div class="pip-title">
+            <div class="pip-recording" id="pipRecording" style="display: none;"></div>
+            <span>Your Camera</span>
+          </div>
+          <div class="pip-controls">
+            <button class="pip-btn" id="pipMinimize" title="Minimize">−</button>
+            <button class="pip-btn" id="pipMaximize" title="Maximize">□</button>
+          </div>
+        </div>
+        <video id="userVideo" autoplay playsinline muted></video>
+        <div class="resize-handle" id="resizeHandle">⋰</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Start camera button -->
-    <button onclick="startCamera()">Start Camera</button>
-  </main>
+  <!-- Chat Sidebar -->
+  <div class="chat-sidebar" id="chatSidebar">
+    <div class="chat-header">
+      <div class="chat-title">
+        💬 Live Chat
+        <div class="chat-count" id="chatCount">0</div>
+      </div>
+    </div>
+
+    <div class="chat-history" id="chatHistory">
+      <div class="chat-empty">
+        <div class="chat-empty-icon">💬</div>
+        <div>Start chatting with CameraBot!</div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-wrapper">
+        <textarea id="messageInput" placeholder="Type your message..." rows="1"></textarea>
+        <button class="send-btn" id="sendMessageBtn">↑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Control Bar -->
+  <div class="control-bar">
+    <button class="control-btn" id="startCameraBtn" title="Start Camera">
+      📹
+      <div class="control-label">Camera</div>
+    </button>
+
+    <button class="control-btn" id="captureBtn" disabled title="Capture & Analyze">
+      📸
+      <div class="control-label">Capture</div>
+    </button>
+
+    <button class="control-btn" id="voiceBtn" title="Voice Input">
+      🎙️
+      <div class="control-label">Mic</div>
+    </button>
+
+    <button class="control-btn" id="speakBtn" disabled title="Speak Response">
+      🔊
+      <div class="control-label">Speak</div>
+    </button>
+
+    <button class="control-btn" id="stopCameraBtn" disabled title="Stop Camera">
+      ⏹️
+      <div class="control-label">Stop</div>
+    </button>
+  </div>
+
+  <!-- Status Toast -->
+  <div id="statusToast"></div>
 
   <script>
-    const video = document.getElementById('cameraFeed');
-    const canvas = document.getElementById('snapshot');
-    const ctx = canvas.getContext('2d');
-    const botReply = document.getElementById('botReply');
-    let streamStarted = false;
+    // ==================== GLOBAL VARIABLES ====================
+    let stream = null;
+    let lastResponse = '';
+    let isProcessing = false;
+    let messageCount = 0;
+    let recognition = null;
+    let viewerCount = 1;
 
-    // Start the webcam
-    function startCamera() {
-      if (streamStarted) return;
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          video.srcObject = stream;
-          streamStarted = true;
+    // PiP Variables
+    let isDragging = false;
+    let isResizing = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let resizeStartX = 0;
+    let resizeStartY = 0;
+    let resizeStartWidth = 0;
+    let resizeStartHeight = 0;
 
-          // Capture and send frames to backend every 1 second
-          setInterval(sendFrame, 1000);
-        })
-        .catch(err => console.error("Camera error:", err));
-    }
+    // ==================== DOM ELEMENTS ====================
+    const userVideo = document.getElementById('userVideo');
+    const avatarCanvas = document.getElementById('avatarCanvas');
+    const pipCamera = document.getElementById('pipCamera');
+    const resizeHandle = document.getElementById('resizeHandle');
+    const chatHistory = document.getElementById('chatHistory');
+    const messageInput = document.getElementById('messageInput');
+    const chatCount = document.getElementById('chatCount');
+    const emotionBadge = document.getElementById('emotionBadge');
+    const emotionEmoji = document.getElementById('emotionEmoji');
+    const emotionText = document.getElementById('emotionText');
+    const pipRecording = document.getElementById('pipRecording');
 
-    // Capture current frame and send to backend
-    async function sendFrame() {
-      // Draw video frame to hidden canvas
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Buttons
+    const startCameraBtn = document.getElementById('startCameraBtn');
+    const stopCameraBtn = document.getElementById('stopCameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const speakBtn = document.getElementById('speakBtn');
 
-      // Convert canvas to Base64 image
-      const frame = canvas.toDataURL('image/jpeg');
-
-      try {
-        const response = await fetch("/camera", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ frame })
-        });
-        const data = await response.json();
-        // Show backend response
-        botReply.innerText = data.reply;
-      } catch (err) {
-        botReply.innerText = "⚠️ Error sending frame";
-        console.error(err);
+    // ==================== FLOATING PARTICLES ====================
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particlesContainer.appendChild(particle);
       }
     }
+
+    // ==================== AVATAR RENDERING ====================
+    function initAvatar() {
+      const parent = avatarCanvas.parentElement;
+      avatarCanvas.width = parent.clientWidth;
+      avatarCanvas.height = parent.clientHeight;
+      drawAvatar(false);
+      
+      // Redraw on resize
+      window.addEventListener('resize', () => {
+        avatarCanvas.width = parent.clientWidth;
+        avatarCanvas.height = parent.clientHeight;
+        drawAvatar(false);
+      });
+    }
+
+    function drawAvatar(speaking = false) {
+      const ctx = avatarCanvas.getContext('2d');
+      ctx.clearRect(0, 0, avatarCanvas.width, avatarCanvas.height);
+
+      // Gradient Background
+      const gradient = ctx.createRadialGradient(
+        avatarCanvas.width / 2, avatarCanvas.height / 2, 0,
+        avatarCanvas.width / 2, avatarCanvas.height / 2, avatarCanvas.width / 2
+      );
+      gradient.addColorStop(0, '#1a1f3a');
+      gradient.addColorStop(1, '#0d1117');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
+
+      const cx = avatarCanvas.width / 2;
+      const cy = avatarCanvas.height / 2;
+      const scale = Math.min(avatarCanvas.width, avatarCanvas.height) / 500;
+
+      // Glow Effect
+      ctx.shadowColor = 'rgba(99, 102, 241, 0.6)';
+      ctx.shadowBlur = 60;
+
+      // Head
+      ctx.fillStyle = '#6366f1';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 140 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+
+      // Eyes
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(cx - 45 * scale, cy - 25 * scale, 22 * scale, 0, Math.PI * 2);
+      ctx.arc(cx + 45 * scale, cy - 25 * scale, 22 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Pupils with animation
+      const pupilOffset = speaking ? Math.sin(Date.now() / 200) * 3 : 0;
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(cx - 45 * scale + pupilOffset, cy - 25 * scale, 12 * scale, 0, Math.PI * 2);
+      ctx.arc(cx + 45 * scale + pupilOffset, cy - 25 * scale, 12 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Highlights
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(cx - 40 * scale, cy - 30 * scale, 6 * scale, 0, Math.PI * 2);
+      ctx.arc(cx + 50 * scale, cy - 30 * scale, 6 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mouth
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 6 * scale;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      
+      if (speaking) {
+        // Speaking animation
+        const mouthOpen = Math.abs(Math.sin(Date.now() / 150)) * 20 * scale;
+        ctx.ellipse(cx, cy + 50 * scale, 30 * scale, 15 * scale + mouthOpen, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Tongue
+        ctx.fillStyle = '#ff6b9d';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + 55 * scale, 18 * scale, 10 * scale, 0, 0, Math.PI);
+        ctx.fill();
+      } else {
+        // Smile
+        ctx.arc(cx, cy + 35 * scale, 50 * scale, 0.2 * Math.PI, 0.8 * Math.PI);
+        ctx.stroke();
+      }
+
+      // Eyebrows
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 5 * scale;
+      ctx.beginPath();
+      ctx.moveTo(cx - 70 * scale, cy - 55 * scale);
+      ctx.lineTo(cx - 25 * scale, cy - 55 * scale);
+      ctx.moveTo(cx + 25 * scale, cy - 55 * scale);
+      ctx.lineTo(cx + 70 * scale, cy - 55 * scale);
+      ctx.stroke();
+    }
+
+    function animateSpeaking(text) {
+      if (!text) return;
+      
+      let frameCount = 0;
+      const maxFrames = text.split(' ').length * 4;
+      
+      const animate = () => {
+        if (frameCount < maxFrames) {
+          drawAvatar(true);
+          frameCount++;
+          setTimeout(() => requestAnimationFrame(animate), 150);
+        } else {
+          drawAvatar(false);
+        }
+      };
+      
+      animate();
+    }
+
+    // ==================== PIP DRAGGING ====================
+    pipCamera.addEventListener('mousedown', (e) => {
+      if (e.target === resizeHandle || e.target.closest('.pip-header')) {
+        if (!e.target.closest('.pip-controls')) {
+          isDragging = true;
+          pipCamera.style.cursor = 'grabbing';
+          dragOffsetX = e.clientX - pipCamera.offsetLeft;
+          dragOffsetY = e.clientY - pipCamera.offsetTop;
+          pipCamera.classList.add('dragging');
+        }
+        return;
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const newLeft = e.clientX - dragOffsetX;
+        const newTop = e.clientY - dragOffsetY;
+        
+        const maxLeft = window.innerWidth - pipCamera.offsetWidth - 380;
+        const maxTop = window.innerHeight - pipCamera.offsetHeight - 160;
+        
+        pipCamera.style.left = Math.max(20, Math.min(newLeft, maxLeft)) + 'px';
+        pipCamera.style.top = Math.max(90, Math.min(newTop, maxTop)) + 'px';
+        pipCamera.style.right = 'auto';
+        pipCamera.style.bottom = 'auto';
+      }
+
+      if (isResizing) {
+        const deltaX = e.clientX - resizeStartX;
+        const deltaY = e.clientY - resizeStartY;
+        
+        const newWidth = Math.max(200, Math.min(600, resizeStartWidth + deltaX));
+        const newHeight = Math.max(113, Math.min(338, resizeStartHeight + deltaY));
+        
+        pipCamera.style.width = newWidth + 'px';
+        pipCamera.style.height = newHeight + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      isResizing = false;
+      pipCamera.style.cursor = 'move';
+      pipCamera.classList.remove('dragging');
+    });
+
+    // ==================== PIP RESIZING ====================
+    resizeHandle.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      isResizing = true;
+      resizeStartX = e.clientX;
+      resizeStartY = e.clientY;
+      resizeStartWidth = pipCamera.offsetWidth;
+      resizeStartHeight = pipCamera.offsetHeight;
+    });
+
+    // ==================== PIP CONTROLS ====================
+    document.getElementById('pipMinimize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      pipCamera.style.width = '200px';
+      pipCamera.style.height = '113px';
+      showToast('Camera minimized', 'info', 2000);
+    });
+
+    document.getElementById('pipMaximize').addEventListener('click', (e) => {
+      e.stopPropagation();
+      pipCamera.style.width = '480px';
+      pipCamera.style.height = '270px';
+      showToast('Camera maximized', 'info', 2000);
+    });
+
+    // ==================== CAMERA CONTROLS ====================
+    startCameraBtn.addEventListener('click', async () => {
+      try {
+        showToast('Starting camera...', 'info');
+        
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 1920, height: 1080 },
+          audio: false
+        });
+        
+        userVideo.srcObject = stream;
+        
+        startCameraBtn.disabled = true;
+        startCameraBtn.classList.remove('active');
+        stopCameraBtn.disabled = false;
+        stopCameraBtn.classList.add('camera-on');
+        captureBtn.disabled = false;
+        
+        pipRecording.style.display = 'block';
+        
+        showToast('Camera started! 📹', 'success', 3000);
+        
+      } catch (error) {
+        console.error('Camera error:', error);
+        showToast('❌ Camera access denied', 'error', 4000);
+      }
+    });
+
+    stopCameraBtn.addEventListener('click', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        userVideo.srcObject = null;
+        stream = null;
+      }
+      
+      startCameraBtn.disabled = false;
+      stopCameraBtn.disabled = true;
+      stopCameraBtn.classList.remove('camera-on');
+      captureBtn.disabled = true;
+      
+      pipRecording.style.display = 'none';
+      emotionBadge.style.display = 'none';
+      
+      showToast('Camera stopped', 'info', 2000);
+    });
+
+    // ==================== CAPTURE & ANALYZE ====================
+    captureBtn.addEventListener('click', async () => {
+      if (isProcessing) return;
+      isProcessing = true;
+      captureBtn.disabled = true;
+      
+      showToast('🔍 Analyzing your expression...', 'info');
+      
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = userVideo.videoWidth;
+        canvas.height = userVideo.videoHeight;
+        canvas.getContext('2d').drawImage(userVideo, 0, 0);
+        
+        const frameData = canvas.toDataURL('image/jpeg', 0.85);
+        const userMsg = messageInput.value.trim() || "Analyze my expression and respond";
+        
+        const response = await fetch('/camera', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            frame: frameData,
+            emotion: 'analyzing',
+            message: userMsg
+          })
+        });
+        
+        if (!response.ok) throw new Error('Server error');
+        
+        const data = await response.json();
+        
+        // Show emotion
+        const emotions = ['happy', 'sad', 'surprised', 'angry', 'neutral'];
+        const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+        const emojiMap = { happy: '😊', sad: '😢', surprised: '😲', angry: '😠', neutral: '😐' };
+        
+        emotionBadge.style.display = 'flex';
+        emotionEmoji.textContent = emojiMap[randomEmotion];
+        emotionText.textContent = randomEmotion.charAt(0).toUpperCase() + randomEmotion.slice(1);
+        
+        addToChat('You', `[${randomEmotion.toUpperCase()}] ${userMsg}`, 'user');
+        addToChat('CameraBot', data.reply, 'bot');
+        
+        lastResponse = data.reply;
+        speakBtn.disabled = false;
+        messageInput.value = '';
+        
+        // Auto-speak the response
+        autoSpeak(data.reply);
+        
+        showToast('✅ Analysis complete!', 'success', 3000);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        showToast('❌ Analysis failed', 'error', 3000);
+      }
+      
+      isProcessing = false;
+      captureBtn.disabled = false;
+    });
+
+    // ==================== CHAT FUNCTIONS ====================
+    sendMessageBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message || isProcessing) return;
+      
+      isProcessing = true;
+      
+      addToChat('You', message, 'user');
+      messageInput.value = '';
+      
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: message,
+            session_id: 'camera_pro_session'
+          })
+        });
+        
+        if (!response.ok) throw new Error('Server error');
+        
+        const data = await response.json();
+        addToChat('CameraBot', data.reply, 'bot');
+        
+        lastResponse = data.reply;
+        speakBtn.disabled = false;
+        
+        // Auto-speak the response
+        autoSpeak(data.reply);
+        
+      } catch (error) {
+        console.error('Error:', error);
+        addToChat('CameraBot', '⚠️ Connection error. Please try again.', 'bot');
+      }
+      
+      isProcessing = false;
+    }
+
+    function addToChat(sender, message, type) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `chat-message ${type}`;
+      msgDiv.innerHTML = `<strong>${sender}</strong>${escapeHtml(message)}`;
+      
+      const empty = chatHistory.querySelector('.chat-empty');
+      if (empty) empty.remove();
+      
+      chatHistory.appendChild(msgDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+      
+      messageCount++;
+      chatCount.textContent = messageCount;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ==================== VOICE CONTROLS ====================
+    // Auto-speak function
+    function autoSpeak(text) {
+      if (!text || !('speechSynthesis' in window)) return;
+      
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      
+      utterance.onstart = () => {
+        speakBtn.classList.add('active');
+        animateSpeaking(text);
+      };
+      
+      utterance.onend = () => {
+        speakBtn.classList.remove('active');
+        drawAvatar(false);
+      };
+      
+      window.speechSynthesis.speak(utterance);
+    }
+    
+    voiceBtn.addEventListener('click', () => {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast('Voice input not supported', 'error', 3000);
+        return;
+      }
+
+      if (!recognition) {
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        
+        recognition.onstart = () => {
+          voiceBtn.classList.add('active');
+          showToast('🎤 Listening...', 'info');
+        };
+        
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          messageInput.value = transcript;
+          showToast('Voice captured!', 'success', 2000);
+        };
+        
+        recognition.onerror = () => {
+          voiceBtn.classList.remove('active');
+          showToast('Voice input error', 'error', 2000);
+        };
+        
+        recognition.onend = () => {
+          voiceBtn.classList.remove('active');
+        };
+      }
+      
+      recognition.start();
+    });
+
+    speakBtn.addEventListener('click', () => {
+      if (!lastResponse) return;
+      
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(lastResponse);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        
+        utterance.onstart = () => {
+          speakBtn.classList.add('active');
+          animateSpeaking(lastResponse);
+        };
+        
+        utterance.onend = () => {
+          speakBtn.classList.remove('active');
+          drawAvatar(false);
+        };
+        
+        window.speechSynthesis.speak(utterance);
+      } else {
+        showToast('Text-to-speech not supported', 'error', 3000);
+      }
+    });
+
+    // ==================== TOAST NOTIFICATIONS ====================
+    function showToast(message, type = 'info', duration = 3000) {
+      const toast = document.getElementById('statusToast');
+      toast.className = `status-toast ${type}`;
+      toast.textContent = message;
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.animation = 'toastSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse';
+        setTimeout(() => {
+          toast.style.display = 'none';
+          toast.style.animation = '';
+        }, 300);
+      }, duration);
+    }
+
+    // ==================== AUTO-RESIZE TEXTAREA ====================
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      initAvatar();
+      console.log('✅ CameraBot Pro initialized!');
+      showToast('🚀 CameraBot Pro ready!', 'success', 3000);
+    });
+
+    // ==================== WINDOW RESIZE ====================
+    window.addEventListener('resize', () => {
+      initAvatar();
+    });
   </script>
 </body>
 </html>
+        width: 240px;
+        height: 135px;
+        bottom: 110px;
+        right: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .control-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+      }
+
+      .status-card {
+        padding: 12px 16px;
+        font-size: 12px;
+      }
+
+      .pip-camera {

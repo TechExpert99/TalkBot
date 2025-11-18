@@ -24,6 +24,8 @@
       --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
       --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       --gradient-hero: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      --success-color: #10b981;
+      --error-color: #ef4444;
     }
 
     body {
@@ -138,6 +140,12 @@
       margin-top: 2px;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
     nav {
       display: flex;
       gap: 32px;
@@ -173,6 +181,245 @@
 
     nav a:hover::after {
       width: 80%;
+    }
+
+    /* Auth Button */
+    .auth-btn {
+      padding: 10px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 10px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(102, 126, 234, 0.5);
+    }
+
+    .auth-btn.signed-in {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 28px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .modal-header h2 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .auth-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .auth-method-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .auth-method-btn:hover {
+      border-color: var(--accent-primary);
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+    }
+
+    .auth-method-btn .icon {
+      font-size: 20px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .input-group input {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .submit-btn {
+      padding: 14px;
+      border-radius: 10px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(102, 126, 234, 0.5);
+    }
+
+    .toggle-mode {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .toggle-mode a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggle-mode a:hover {
+      text-decoration: underline;
     }
 
     /* Hero Section */
@@ -460,12 +707,33 @@
       z-index: 1;
     }
 
+    /* Loading Spinner */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         gap: 20px;
         padding: 20px;
+      }
+
+      .header-right {
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
       }
 
       nav {
@@ -477,6 +745,11 @@
       nav a {
         font-size: 14px;
         padding: 6px 12px;
+      }
+
+      .auth-btn {
+        width: 100%;
+        justify-content: center;
       }
 
       main.hero h1 {
@@ -506,6 +779,10 @@
 
       .floating-card {
         display: none;
+      }
+
+      .modal {
+        padding: 32px 24px;
       }
     }
 
@@ -547,22 +824,74 @@
         <div class="brand-sub">AI-powered assistant</div>
       </div>
     </div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/future">Future</a>
-      <a href="/contact">Contact</a>
-     
-    </nav>
+    <div class="header-right">
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/future">Future</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <button class="auth-btn" id="authButton">
+        <span>👤</span>
+        <span>Sign In</span>
+      </button>
+    </div>
   </header>
+
+  <!-- Authentication Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <button class="modal-close" onclick="TalkBotAuth.closeAuthModal()">×</button>
+      
+      <div class="modal-header">
+        <h2 id="modalTitle">Welcome Back</h2>
+        <p id="modalSubtitle">Sign in to continue to TalkBot</p>
+      </div>
+
+      <div class="auth-methods">
+        <button class="auth-method-btn" id="googleSignInBtn">
+          <span class="icon">🔵</span>
+          <span>Continue with Google</span>
+        </button>
+        
+        <button class="auth-method-btn" id="microsoftSignInBtn">
+          <span class="icon">🪟</span>
+          <span>Continue with Microsoft</span>
+        </button>
+      </div>
+
+      <div class="divider">OR</div>
+
+      <div class="email-form" id="emailForm">
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+        </div>
+        
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <button class="submit-btn" id="emailAuthBtn">
+          <span id="submitBtnText">Sign In</span>
+        </button>
+      </div>
+
+      <div class="toggle-mode">
+        <span id="toggleText">Don't have an account?</span>
+        <a onclick="TalkBotAuth.toggleAuthMode()">Sign Up</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <main class="hero">
     <h1>Start with <span class="accent">TalkBot</span></h1>
     <p>Choose how you want to interact with TalkBot - your intelligent AI assistant ready to help you anytime, anywhere.</p>
     <div class="hero-actions">
-      <a href="/chat" class="btn">💬 Chat with TalkBot</a>
-      <a href="/camera" class="btn ghost">📷 CameraBot</a>
+      <a href="/chat" class="btn">💬 VioceBot</a>
+      <a href="/camera" class="btn">📷 VideoBot</a>
     </div>
 
     <!-- Features Section -->
@@ -578,7 +907,6 @@
         <p>Your conversations are protected with industry-standard encryption</p>
       </div>
       <div class="feature-card">
-        <div class="feature-card">
         <div class="feature-icon">💡</div>
         <h3>Smart Insights</h3>
         <p>Receive intelligent suggestions and comprehensive answers</p>
@@ -589,7 +917,11 @@
   <!-- Footer -->
   <footer>
     <p class="disclaimer">⚠️ Disclaimer: TalkBot can make mistakes. Verify important info before acting.</p>
-    <p>© TalkBot • 2025 • Made with ❤️</p>
+    <p>© TalkBot • 2025 • Team Tech99</p>
   </footer>
+
+  <!-- Firebase Modern Modular SDK (v12.6.0) -->
+  <!-- All Firebase imports are handled in auth.js as ES6 modules -->
+  <script type="module" src="{{ url_for('static', filename='js/auth.js') }}"></script>
 </body>
 </html>

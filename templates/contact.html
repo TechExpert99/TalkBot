@@ -1,34 +1,249 @@
+<!-- ABOUT.HTML -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Contact — TalkBot</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TalkBot — About</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0a0e27;
+      color: #e2e8f0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(21, 25, 50, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.5);
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+    }
+
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #c4b5fd;
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    nav a.active {
+      color: #c4b5fd;
+      background: rgba(99, 102, 241, 0.25);
+    }
+
+    .info-page {
+      max-width: 1000px;
+      margin: 80px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 42px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      font-weight: 800;
+    }
+
+    .card {
+      background: rgba(21, 25, 50, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .card h2 {
+      font-size: 26px;
+      color: #8b5cf6;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      color: #cbd5e1;
+      line-height: 1.8;
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      color: #cbd5e1;
+      margin-top: 10px;
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-size: 14px;
+      border-top: 1px solid rgba(99, 102, 241, 0.1);
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .info-page {
+        margin: 40px 20px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
 </head>
 <body>
- <header>
+  <header>
     <div class="brand">
       <div class="logo">TB</div>
       <div>
         <div class="brand-title">TalkBot</div>
-        <div class="brand-sub">AI-powered assistant</div>
+        <div class="brand-sub">AI-POWERED ASSISTANT</div>
       </div>
     </div>
     <nav>
-  <a href="{{ url_for('home') }}">Home</a>
-  <a href="{{ url_for('about') }}">About</a>
-  <a href="{{ url_for('future') }}">Future</a>
-  <a href="{{ url_for('contact') }}">Contact</a>
-</nav>
+      <a href="/">Home</a>
+      <a href="/about" class="active">About</a>
+      <a href="/future">Future</a>
+      <a href="/contact">Contact</a>
+    </nav>
   </header>
-<main class="container">
-  <div class="card">
-    <h2>Contact Us</h2>
-    <p>Email: support@talkbot.ai</p>
-    <p>Location: Bengaluru, India</p>
-  </div>
-</main>
-<footer>© 2025 TalkBot</footer>
+
+  <main class="info-page">
+    <h1>About TalkBot</h1>
+
+    <div class="card">
+      <h2>💡 What is TalkBot?</h2>
+      <p>
+        <strong>TalkBot</strong> is an intelligent conversational AI platform built to make interactions more natural, engaging, and real-time.
+        It can respond to your messages, answer questions, generate code, and even interact through camera-based visual AI.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Technologies Used</h2>
+      <ul>
+        <li><strong>Flask (Python):</strong> Manages backend logic, routing, and API communication.</li>
+        <li><strong>Google Gemini API:</strong> The core AI model that powers all natural language responses and reasoning.</li>
+        <li><strong>HTML, CSS, JavaScript:</strong> For an elegant, interactive front-end experience.</li>
+        <li><strong>AJAX / Fetch API:</strong> Enables real-time chat updates without reloading the page.</li>
+        <li><strong>JSON:</strong> Facilitates structured data transfer between client and server.</li>
+        <li><strong>Python:</strong> Handles data processing, AI interaction, and logic integration.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ How TalkBot Works</h2>
+      <p>The process of how TalkBot interacts with users:</p>
+      <ul>
+        <li><strong>1. Input:</strong> User types or speaks a message in the chat interface.</li>
+        <li><strong>2. Flask Server:</strong> The message is sent to Flask via POST request.</li>
+        <li><strong>3. Gemini Model:</strong> Flask forwards the query to the <strong>Gemini 1.5 Flash</strong> model using an API key.</li>
+        <li><strong>4. Processing:</strong> Gemini understands context, previous chat history, and generates a natural response.</li>
+        <li><strong>5. Response:</strong> Flask sends the AI’s response back as JSON to the frontend.</li>
+        <li><strong>6. Display:</strong> JavaScript displays the message instantly in the chat window for a seamless flow.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>🎯 Purpose & Vision</h2>
+      <p>
+        TalkBot aims to become a multi-modal AI assistant capable of connecting with users through
+        <strong>text, voice, and camera</strong>. It’s designed for everyday help, customer support, education,
+        and personal assistance — making AI communication human-like and practical.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>👨‍💻 Developer</h2>
+      <p>
+        Created by <strong>Nayak</strong> — an AI & ML engineer passionate about conversational intelligence,
+        computer vision, and human-centered AI development. TalkBot represents his vision to create a truly interactive AI system.
+      </p>
+    </div>
+  </main>
+
+  <footer>© 2025 TalkBot • Powered by Team Tech</footer>
 </body>
 </html>
